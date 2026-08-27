@@ -25,3 +25,4 @@ Thumbs.db
 
 # Archivos de datos
 *.csv
+*.json
