@@ -329,6 +329,16 @@ class Command(BaseCommand):
         )
 
         transfers = []
+        product_names = dict(
+            Forecast.objects.exclude(product_name="")
+            .values_list("product_code", "product_name")
+        )
+
+        for product_code, product_name in (
+            PurchaseOrder.objects.exclude(item_name="")
+            .values_list("codigo_item", "item_name")
+        ):
+            product_names.setdefault(product_code, product_name)
 
         with open(
             TRANSFERS_FILE,
@@ -359,7 +369,10 @@ class Command(BaseCommand):
                 transfer = Transfer(
                     product_code=product_code,
 
-                    product_name="",
+                    product_name=product_names.get(
+                        product_code,
+                        ""
+                    ),
 
                     origen=str(
                         movement.get("origin", "")

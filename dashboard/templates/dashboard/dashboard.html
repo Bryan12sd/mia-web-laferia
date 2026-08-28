@@ -364,11 +364,9 @@ Dashboard
 
                                     <td>
                                         <a href="{% url 'product_detail' transfer.product_code %}" class="fw-semibold text-decoration-none">
-                                            {{ transfer.product_name|default:transfer.product_code }}
+                                            {{ transfer.display_name }}
                                         </a>
-                                        {% if transfer.product_name %}
-                                            <br><small class="text-muted">{{ transfer.product_code }}</small>
-                                        {% endif %}
+                                        <br><small class="text-muted">{{ transfer.product_code }}</small>
                                     </td>
 
                                     <td>

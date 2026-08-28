@@ -5,6 +5,7 @@ from django.db.models import Count, Sum
 from django.shortcuts import render
 
 from dashboard.models import Forecast, PurchaseOrder, Transfer
+from dashboard.views.transfers.names import add_transfer_display_names
 
 
 @login_required
@@ -128,7 +129,7 @@ def dashboard_view(request):
     # TRANSFERENCIAS RECIENTES
     # =========================================================
 
-    recent_transfers = (
+    recent_transfers = add_transfer_display_names(
         Transfer.objects
         .order_by("-id")[:10]
     )

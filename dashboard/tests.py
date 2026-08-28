@@ -190,6 +190,8 @@ class InventoryNavigationTests(TestCase):
         self.assertEqual(response.context["total_quantity"], 7)
         self.assertContains(response, "text-bg-secondary")
         self.assertContains(response, "text-bg-primary")
+        self.assertContains(response, "Producto de prueba")
+        self.assertNotContains(response, "Sin nombre registrado")
 
     def test_warehouse_list_combines_orders_and_transfer_movements(self):
         response = self.client.get(reverse("warehouses"))

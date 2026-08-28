@@ -4,6 +4,7 @@ from django.db.models import Q, Sum
 from django.shortcuts import render
 
 from dashboard.models import Transfer
+from dashboard.views.transfers.names import add_transfer_display_names
 
 
 @login_required
@@ -30,6 +31,7 @@ def transfer_list(request):
     page_obj = Paginator(
         transfers.order_by("-id"), 25
     ).get_page(request.GET.get("page"))
+    add_transfer_display_names(page_obj.object_list)
 
     warehouses = sorted(
         set(
