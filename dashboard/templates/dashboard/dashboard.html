@@ -132,9 +132,6 @@ Dashboard
 </div>
 
 
-<!-- ===================================================== -->
-<!-- KPIs SECUNDARIOS -->
-<!-- ===================================================== -->
 
 <div class="row">
 
@@ -221,9 +218,7 @@ Dashboard
 </div>
 
 
-<!-- ===================================================== -->
-<!-- GRÁFICOS -->
-<!-- ===================================================== -->
+ <hr>
 
 <div class="row">
 
@@ -300,208 +295,7 @@ Dashboard
 
 </div>
 
-
-<!-- ===================================================== -->
-<!-- TOP ÓRDENES -->
-<!-- ===================================================== -->
-
-<div class="row">
-
-    <div class="col-12">
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-cart4 me-2"></i>
-                        Principales órdenes de compra
-                    </h3>
-                    <a href="{% url 'orders' %}" class="btn btn-primary btn-sm">
-                        Ver todas
-                    </a>
-                </div>
-
-            </div>
-
-            <div class="card-body p-0">
-
-                <div class="table-responsive">
-
-                    <table
-                        class="table table-hover table-striped mb-0"
-                    >
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Código
-                                </th>
-
-                                <th>
-                                    Producto
-                                </th>
-
-                                <th>
-                                    Almacén
-                                </th>
-
-                                <th>
-                                    Categoría
-                                </th>
-
-                                <th class="text-end">
-                                    Stock
-                                </th>
-
-                                <th class="text-end">
-                                    Demanda
-                                </th>
-
-                                <th class="text-end">
-                                    Reorden
-                                </th>
-
-                                <th class="text-end">
-                                    Ordenar
-                                </th>
-
-                                <th class="text-end">
-                                    Costo unitario
-                                </th>
-
-                                <th class="text-end">
-                                    Valor orden
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            {% for order in top_orders %}
-
-                                <tr>
-
-                                    <td>
-                                        {{ order.codigo_item }}
-                                    </td>
-
-                                    <td>
-                                        {{ order.item_name }}
-                                    </td>
-
-                                    <td>
-
-                                        <span class="badge text-bg-secondary">
-
-                                            {{ order.almacen }}
-
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-
-                                        {% if order.categoria == 'A' %}
-
-                                            <span class="badge text-bg-success">
-                                                A
-                                            </span>
-
-                                        {% elif order.categoria == 'B' %}
-
-                                            <span class="badge text-bg-warning">
-                                                B
-                                            </span>
-
-                                        {% else %}
-
-                                            <span class="badge text-bg-secondary">
-
-                                                {{ order.categoria }}
-
-                                            </span>
-
-                                        {% endif %}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{ order.disponible|floatformat:0 }}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{ order.forecasted_demand|floatformat:0 }}
-
-                                    </td>
-
-                                    <td class="text-end">
-                                        {{ order.punto_reorden|floatformat:0 }}
-                                    </td>
-
-                                    <td class="text-end">
-                                        <strong>
-                                            {{ order.cantidad_a_ordenar|floatformat:0 }}
-                                        </strong>
-                                    </td>
-
-                                    <td class="text-end">
-                                        $ {{ order.costo|floatformat:2 }}
-                                    </td>
-
-                                    <td class="text-end">
-                                        <strong>
-                                            $ {{ order.valor_orden|floatformat:2 }}
-                                        </strong>
-                                    </td>
-
-                                </tr>
-
-                            {% empty %}
-
-                                <tr>
-
-                                    <td
-                                        colspan="10"
-                                        class="text-center py-4"
-                                    >
-
-                                        No existen órdenes de compra.
-
-                                    </td>
-
-                                </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- TRANSFERENCIAS + ALMACENES -->
-<!-- ===================================================== -->
-
+<hr>    
 <div class="row">
 
     <!-- Transferencias -->
@@ -702,10 +496,6 @@ Dashboard
 </div>
 
 
-<!-- ===================================================== -->
-<!-- DATOS PARA JAVASCRIPT -->
-<!-- ===================================================== -->
-
 {{ weekly_labels|json_script:"weekly-labels" }}
 
 {{ weekly_totals|json_script:"weekly-values" }}
@@ -724,9 +514,7 @@ Dashboard
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // =====================================================
-    // DATOS
-    // =====================================================
+
 
     const weeklyLabels = JSON.parse(
         document.getElementById(
@@ -754,9 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    // =====================================================
-    // GRÁFICO DE DEMANDA
-    // =====================================================
 
     const forecastCanvas =
         document.getElementById(
@@ -831,10 +616,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =====================================================
-    // GRÁFICO POR CATEGORÍA
-    // =====================================================
-
+ 
     const categoryCanvas =
         document.getElementById(
             "categoryChart"
