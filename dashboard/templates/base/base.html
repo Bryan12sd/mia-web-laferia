@@ -296,7 +296,7 @@
           <a href="{% url 'dashboard' %}" class="brand-link">
             <!--begin::Brand Image-->
             <img
-              src="{% static 'adminlte/assets/img/AdminLTELogo.png' %}"
+              src="{% static 'adminlte/assets/img/LogoFeria.png' %}"
               alt="AdminLTE Logo"
               class="brand-image opacity-75 shadow"
             />
@@ -321,7 +321,7 @@
             data-lte-target="#navigation"
           />
           <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
-            No matching pages.
+            Parece que no hay resultados para la búsqueda.
           </p>
         </div>
         <!--end::Sidebar Search-->
@@ -337,16 +337,18 @@
             >
               <li class="nav-item">
                 <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.url_name == 'dashboard' %} active{% endif %}">
-                  <i class="nav-icon bi bi-file-earmark"></i>
+                  <i class="nav-icon bi bi-speedometer2"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
+              <li class="nav-header">PRODUCTOS</li>
               <li class="nav-item">
                   <a href="{% url 'forecasts' %}" class="nav-link{% if request.resolver_match.url_name == 'forecasts' %} active{% endif %}">
                       <i class="nav-icon bi bi-graph-up-arrow"></i>
                       <p>Productos pronosticados</p>
                   </a>
               </li>
+              <li class="nav-header">ORDÉNES</li>
               <li class="nav-item">
                   <a href="{% url 'orders' %}" class="nav-link{% if request.resolver_match.url_name == 'orders' %} active{% endif %}">
                       <i class="nav-icon bi bi-cart-check"></i>
@@ -355,7 +357,7 @@
               </li>
            
              
-              <li class="nav-header">PAGES</li>
+              
             
              
 

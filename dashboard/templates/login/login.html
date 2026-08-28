@@ -91,19 +91,39 @@
     <main class="login-box">
 
         <!-- Logo -->
-        <div class="login-logo">
-            <span>
-                <b>Comercial La Feria</b>
-            </span>
-        </div>
+       <div class="login-logo mb-4">
+    <div class="d-flex flex-column align-items-center justify-content-center">
 
+        <img
+            src="{% static 'adminlte/assets/img/LogoFeria.png' %}"
+            alt="Comercial La Feria"
+            class="mb-2"
+            style="
+                width: 85px;
+                height: 85px;
+                object-fit: contain;
+            "
+        >
+
+        <span
+            class="fw-semibold"
+            style="
+                font-size: 1.6rem;
+                color: var(--bs-body-color);
+            "
+        >
+            Comercial <b>La Feria</b>
+        </span>
+
+    </div>
+</div>
         <!-- Card -->
         <div class="card">
 
             <div class="card-body login-card-body">
 
                 <p class="login-box-msg">
-                    Inicia sesión para acceder al dashboard
+                    Inicia sesión para acceder
                 </p>
 
                 <!-- Mensaje de error -->
