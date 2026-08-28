@@ -1,3 +1,139 @@
-from django.test import TestCase
+from decimal import Decimal
 
-# Create your tests here.
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+
+from dashboard.management.commands.load_model_outputs import to_float
+from dashboard.models import Forecast, PurchaseOrder, Transfer
+
+
+class OrderListViewTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
+            username="tester", password="secret123"
+        )
+        cls.order_a = PurchaseOrder.objects.create(
+            codigo_item="ABC-1",
+            item_name="Arroz premium",
+            almacen="NORTE",
+            categoria="A",
+            modelo_ganador="XGBoost",
+            cantidad_a_ordenar=10,
+            valor_orden=Decimal("25.50"),
+        )
+        PurchaseOrder.objects.create(
+            codigo_item="XYZ-2",
+            item_name="Aceite",
+            almacen="SUR",
+            categoria="B",
+            modelo_ganador="Prophet",
+            cantidad_a_ordenar=5,
+            valor_orden=Decimal("12.25"),
+        )
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_orders_requires_authentication(self):
+        self.client.logout()
+        response = self.client.get(reverse("orders"))
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('orders')}")
+
+    def test_orders_context_contains_totals_and_filter_options(self):
+        response = self.client.get(reverse("orders"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["page_obj"].paginator.count, 2)
+        self.assertEqual(response.context["total_units"], 15)
+        self.assertEqual(response.context["total_value"], Decimal("37.75"))
+        self.assertQuerySetEqual(response.context["warehouses"], ["NORTE", "SUR"])
+
+    def test_orders_applies_combined_filters_and_filtered_totals(self):
+        response = self.client.get(
+            reverse("orders"),
+            {"search": "arroz", "almacen": "NORTE", "categoria": "A", "modelo": "XGBoost"},
+        )
+        self.assertEqual(list(response.context["page_obj"]), [self.order_a])
+        self.assertEqual(response.context["total_units"], 10)
+        self.assertEqual(response.context["total_value"], Decimal("25.50"))
+
+
+class LoaderHelperTests(TestCase):
+    def test_to_float_returns_default_for_invalid_value(self):
+        self.assertEqual(to_float("invalid", default=7.5), 7.5)
+
+
+class DashboardViewTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
+            username="dashboard-user", password="secret123"
+        )
+        Forecast.objects.create(
+            product_code="ABC-1",
+            product_name="Arroz",
+            categoria="A",
+            modelo_ganador="XGBoost",
+            demanda_semanal=[10, "20", None, "invalid"],
+            demanda_total=30,
+            status="OK",
+        )
+        Forecast.objects.create(
+            product_code="XYZ-2",
+            product_name="Aceite",
+            categoria="B",
+            modelo_ganador="Prophet",
+            demanda_semanal=[5, 7, 9],
+            demanda_total=21,
+            status="ERROR",
+        )
+        PurchaseOrder.objects.create(
+            codigo_item="ABC-1",
+            item_name="Arroz",
+            almacen="NORTE",
+            categoria="A",
+            valor_orden=Decimal("25.50"),
+        )
+        PurchaseOrder.objects.create(
+            codigo_item="ABC-1",
+            item_name="Arroz",
+            almacen="",
+            categoria="A",
+            valor_orden=Decimal("4.50"),
+        )
+        Transfer.objects.create(
+            product_code="ABC-1", origen="NORTE", destino="SUR", cantidad=3
+        )
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_dashboard_requires_authentication(self):
+        self.client.logout()
+        response = self.client.get(reverse("dashboard"))
+        self.assertRedirects(
+            response, f"{reverse('login')}?next={reverse('dashboard')}"
+        )
+
+    def test_dashboard_context_contains_consistent_kpis_and_charts(self):
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_forecasts"], 1)
+        self.assertEqual(response.context["total_orders"], 2)
+        self.assertEqual(response.context["total_transfers"], 1)
+        self.assertEqual(response.context["total_warehouses"], 1)
+        self.assertEqual(response.context["total_order_value"], Decimal("30.00"))
+        self.assertEqual(response.context["total_forecast_demand"], 30)
+        self.assertEqual(response.context["weekly_labels"], [
+            "Semana 1", "Semana 2", "Semana 3", "Semana 4"
+        ])
+        self.assertEqual(response.context["weekly_totals"], [10.0, 20.0, 0.0, 0.0])
+        self.assertEqual(response.context["category_labels"], ["A"])
+        self.assertEqual(response.context["category_values"], [1])
+        self.assertEqual(list(response.context["warehouses"]), [{
+            "almacen": "NORTE",
+            "total_orders": 1,
+            "total_value": Decimal("25.50"),
+        }])

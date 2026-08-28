@@ -28,7 +28,7 @@ def to_float(value, default=0.0):
     try:
         return float(value)
     except (ValueError, TypeError):
-        return defaultForecast.objects.all().delete()
+        return default
 
 
 def to_decimal(value, default="0"):

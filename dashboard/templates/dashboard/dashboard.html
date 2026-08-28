@@ -36,6 +36,10 @@ Dashboard
                 style="font-size: 70px;"
             ></i>
 
+            <a href="{% url 'forecasts' %}" class="small-box-footer link-light link-underline-opacity-0">
+                Ver pronósticos <i class="bi bi-arrow-right-circle"></i>
+            </a>
+
         </div>
 
     </div>
@@ -62,6 +66,10 @@ Dashboard
                 class="bi bi-cart-check small-box-icon"
                 style="font-size: 70px;"
             ></i>
+
+            <a href="{% url 'orders' %}" class="small-box-footer link-light link-underline-opacity-0">
+                Ver órdenes <i class="bi bi-arrow-right-circle"></i>
+            </a>
 
         </div>
 
@@ -238,11 +246,15 @@ Dashboard
 
             <div class="card-body">
 
-                <div style="height: 350px;">
-
-                    <canvas id="forecastChart"></canvas>
-
-                </div>
+                {% if weekly_totals %}
+                    <div style="height: 350px;">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center text-muted" style="height: 350px;">
+                        No hay datos de demanda semanal disponibles.
+                    </div>
+                {% endif %}
 
             </div>
 
@@ -270,11 +282,15 @@ Dashboard
 
             <div class="card-body">
 
-                <div style="height: 350px;">
-
-                    <canvas id="categoryChart"></canvas>
-
-                </div>
+                {% if category_values %}
+                    <div style="height: 350px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center text-muted" style="height: 350px;">
+                        No hay categorías disponibles.
+                    </div>
+                {% endif %}
 
             </div>
 
@@ -297,13 +313,15 @@ Dashboard
 
             <div class="card-header">
 
-                <h3 class="card-title">
-
-                    <i class="bi bi-cart4 me-2"></i>
-
-                    Principales órdenes de compra
-
-                </h3>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-cart4 me-2"></i>
+                        Principales órdenes de compra
+                    </h3>
+                    <a href="{% url 'orders' %}" class="btn btn-primary btn-sm">
+                        Ver todas
+                    </a>
+                </div>
 
             </div>
 
@@ -453,7 +471,7 @@ Dashboard
                                 <tr>
 
                                     <td
-                                        colspan="9"
+                                        colspan="10"
                                         class="text-center py-4"
                                     >
 
@@ -540,9 +558,10 @@ Dashboard
                                 <tr>
 
                                     <td>
-
-                                        {{ transfer.product_code }}
-
+                                        {{ transfer.product_name|default:transfer.product_code }}
+                                        {% if transfer.product_name %}
+                                            <br><small class="text-muted">{{ transfer.product_code }}</small>
+                                        {% endif %}
                                     </td>
 
                                     <td>
@@ -745,7 +764,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
 
-    if (forecastCanvas) {
+    if (forecastCanvas && typeof Chart !== "undefined" && weeklyValues.length) {
 
         new Chart(
             forecastCanvas,
@@ -766,6 +785,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                 weeklyValues,
 
                             borderWidth: 3,
+
+                            borderColor: "#0d6efd",
+
+                            backgroundColor: "rgba(13, 110, 253, 0.15)",
 
                             tension: 0.3,
 
@@ -818,7 +841,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
 
-    if (categoryCanvas) {
+    if (categoryCanvas && typeof Chart !== "undefined" && categoryValues.length) {
 
         new Chart(
             categoryCanvas,
@@ -835,6 +858,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         {
                             data:
                                 categoryValues,
+
+                            backgroundColor: [
+                                "#198754",
+                                "#ffc107",
+                                "#6c757d",
+                                "#0dcaf0",
+                                "#dc3545"
+                            ],
 
                             borderWidth: 2
                         }

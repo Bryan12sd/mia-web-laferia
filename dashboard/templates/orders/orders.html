@@ -12,6 +12,36 @@
 {% block content %}
 
 <div class="row">
+    <div class="col-md-4">
+        <div class="small-box text-bg-primary">
+            <div class="inner">
+                <h3>{{ page_obj.paginator.count }}</h3>
+                <p>Órdenes encontradas</p>
+            </div>
+            <i class="bi bi-cart-check small-box-icon"></i>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="small-box text-bg-success">
+            <div class="inner">
+                <h3>{{ total_units|floatformat:0 }}</h3>
+                <p>Unidades a ordenar</p>
+            </div>
+            <i class="bi bi-box-seam small-box-icon"></i>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="small-box text-bg-warning">
+            <div class="inner">
+                <h3>$ {{ total_value|floatformat:2 }}</h3>
+                <p>Valor total filtrado</p>
+            </div>
+            <i class="bi bi-cash-stack small-box-icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row">
 
     <div class="col-12">
 

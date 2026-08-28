@@ -24,6 +24,7 @@ def dashboard_view(request):
 
     total_warehouses = (
         PurchaseOrder.objects
+        .exclude(almacen="")
         .values("almacen")
         .distinct()
         .count()
@@ -138,6 +139,7 @@ def dashboard_view(request):
 
     warehouses = (
         PurchaseOrder.objects
+        .exclude(almacen="")
         .values("almacen")
         .annotate(
             total_orders=Count("id"),

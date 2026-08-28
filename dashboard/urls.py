@@ -4,6 +4,7 @@ from .views.dashboard.index import dashboard_view
 from .views.forecasts.index import forecast_list
 from .views.orders.index import order_list
 
+
 urlpatterns = [
     path('', login_view, name='home'),
     path('login/', login_view, name='login'),
