@@ -98,6 +98,10 @@ Dashboard
                 style="font-size: 70px;"
             ></i>
 
+            <a href="{% url 'transfers' %}" class="small-box-footer link-dark link-underline-opacity-0">
+                Ver transferencias <i class="bi bi-arrow-right-circle"></i>
+            </a>
+
         </div>
 
     </div>
@@ -125,6 +129,10 @@ Dashboard
                 style="font-size: 70px;"
             ></i>
 
+            <a href="{% url 'warehouses' %}" class="small-box-footer link-light link-underline-opacity-0">
+                Ver almacenes <i class="bi bi-arrow-right-circle"></i>
+            </a>
+
         </div>
 
     </div>
@@ -132,6 +140,9 @@ Dashboard
 </div>
 
 
+<!-- ===================================================== -->
+<!-- KPIs SECUNDARIOS -->
+<!-- ===================================================== -->
 
 <div class="row">
 
@@ -217,8 +228,7 @@ Dashboard
 
 </div>
 
-
- <hr>
+<hr>
 
 <div class="row">
 
@@ -295,7 +305,8 @@ Dashboard
 
 </div>
 
-<hr>    
+<hr>
+
 <div class="row">
 
     <!-- Transferencias -->
@@ -352,7 +363,9 @@ Dashboard
                                 <tr>
 
                                     <td>
-                                        {{ transfer.product_name|default:transfer.product_code }}
+                                        <a href="{% url 'product_detail' transfer.product_code %}" class="fw-semibold text-decoration-none">
+                                            {{ transfer.product_name|default:transfer.product_code }}
+                                        </a>
                                         {% if transfer.product_name %}
                                             <br><small class="text-muted">{{ transfer.product_code }}</small>
                                         {% endif %}
@@ -496,6 +509,10 @@ Dashboard
 </div>
 
 
+<!-- ===================================================== -->
+<!-- DATOS PARA JAVASCRIPT -->
+<!-- ===================================================== -->
+
 {{ weekly_labels|json_script:"weekly-labels" }}
 
 {{ weekly_totals|json_script:"weekly-values" }}
@@ -514,7 +531,9 @@ Dashboard
 
 document.addEventListener("DOMContentLoaded", function () {
 
-
+    // =====================================================
+    // DATOS
+    // =====================================================
 
     const weeklyLabels = JSON.parse(
         document.getElementById(
@@ -542,6 +561,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
+    // =====================================================
+    // GRÁFICO DE DEMANDA
+    // =====================================================
 
     const forecastCanvas =
         document.getElementById(
@@ -616,7 +638,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
- 
+    // =====================================================
+    // GRÁFICO POR CATEGORÍA
+    // =====================================================
+
     const categoryCanvas =
         document.getElementById(
             "categoryChart"

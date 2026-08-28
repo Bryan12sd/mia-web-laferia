@@ -302,7 +302,7 @@
             />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">La Feria</span>
+            <span class="brand-text fw-light">Comercial La Feria</span>
             <!--end::Brand Text-->
           </a>
           <!--end::Brand Link-->
@@ -321,7 +321,7 @@
             data-lte-target="#navigation"
           />
           <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
-            Parece que no hay resultados para la búsqueda.
+            No matching pages.
           </p>
         </div>
         <!--end::Sidebar Search-->
@@ -337,7 +337,7 @@
             >
               <li class="nav-item">
                 <a href="{% url 'dashboard' %}" class="nav-link{% if request.resolver_match.url_name == 'dashboard' %} active{% endif %}">
-                  <i class="nav-icon bi bi-speedometer2"></i>
+                   <i class="nav-icon bi bi-speedometer2"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
@@ -348,11 +348,25 @@
                       <p>Productos pronosticados</p>
                   </a>
               </li>
-              <li class="nav-header">ORDÉNES</li>
+              <li class="nav-header">ÓRDENES</li>
               <li class="nav-item">
                   <a href="{% url 'orders' %}" class="nav-link{% if request.resolver_match.url_name == 'orders' %} active{% endif %}">
                       <i class="nav-icon bi bi-cart-check"></i>
                       <p>Órdenes de compra</p>
+                  </a>
+              </li>
+              <li class="nav-header">TRANSFERENCIAS</li>
+              <li class="nav-item">
+                  <a href="{% url 'transfers' %}" class="nav-link{% if request.resolver_match.url_name == 'transfers' %} active{% endif %}">
+                      <i class="nav-icon bi bi-arrow-left-right"></i>
+                      <p>Transferencias</p>
+                  </a>
+              </li>
+              <li class="nav-header">ALMACENES</li>
+              <li class="nav-item">
+                  <a href="{% url 'warehouses' %}" class="nav-link{% if request.resolver_match.url_name == 'warehouses' %} active{% endif %}">
+                      <i class="nav-icon bi bi-building"></i>
+                      <p>Almacenes</p>
                   </a>
               </li>
            
@@ -429,7 +443,7 @@
         <!--begin::Copyright-->
         <strong>
           Copyright &copy; 2014-2026&nbsp;
-          <a href="https://adminlte.io" class="text-decoration-none">laferia</a>.
+          <a href="https://adminlte.io" class="text-decoration-none">Comercial La Feria</a>.
         </strong>
         All rights reserved.
         <!--end::Copyright-->

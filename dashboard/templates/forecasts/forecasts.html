@@ -247,9 +247,9 @@ Productos pronosticados
                                     <!-- Código -->
                                     <td>
 
-                                        <strong>
+                                        <a href="{% url 'product_detail' forecast.product_code %}" class="fw-semibold text-decoration-none">
                                             {{ forecast.product_code }}
-                                        </strong>
+                                        </a>
 
                                     </td>
 

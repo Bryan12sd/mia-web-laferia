@@ -137,3 +137,84 @@ class DashboardViewTests(TestCase):
             "total_orders": 1,
             "total_value": Decimal("25.50"),
         }])
+
+
+class InventoryNavigationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
+            username="inventory-user", password="secret123"
+        )
+        cls.forecast = Forecast.objects.create(
+            product_code="PROD-1",
+            product_name="Producto de prueba",
+            categoria="A",
+            modelo_ganador="Prophet",
+            demanda_semanal=[10, 12, 14, 16],
+            demanda_total=52,
+            status="OK",
+        )
+        PurchaseOrder.objects.create(
+            codigo_item="PROD-1",
+            item_name="Producto de prueba",
+            almacen="NORTE",
+            categoria="A",
+            cantidad_a_ordenar=20,
+            valor_orden=Decimal("80.00"),
+        )
+        Transfer.objects.create(
+            product_code="PROD-1",
+            product_name="Producto de prueba",
+            origen="NORTE",
+            destino="SUR",
+            cantidad=7,
+        )
+        Transfer.objects.create(
+            product_code="PROD-2",
+            product_name="Otro producto",
+            origen="SUR",
+            destino="NORTE",
+            cantidad=3,
+        )
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_transfer_list_filters_and_keeps_color_semantics(self):
+        response = self.client.get(
+            reverse("transfers"), {"search": "PROD-1", "origen": "NORTE"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["page_obj"].paginator.count, 1)
+        self.assertEqual(response.context["total_quantity"], 7)
+        self.assertContains(response, "text-bg-secondary")
+        self.assertContains(response, "text-bg-primary")
+
+    def test_warehouse_list_combines_orders_and_transfer_movements(self):
+        response = self.client.get(reverse("warehouses"))
+        rows = {row["name"]: row for row in response.context["warehouses"]}
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_warehouses"], 2)
+        self.assertEqual(rows["NORTE"]["order_count"], 1)
+        self.assertEqual(rows["NORTE"]["order_value"], Decimal("80.00"))
+        self.assertEqual(rows["NORTE"]["outgoing_count"], 1)
+        self.assertEqual(rows["NORTE"]["incoming_count"], 1)
+        self.assertEqual(rows["NORTE"]["net_quantity"], -4)
+
+    def test_product_detail_combines_forecast_orders_and_transfers(self):
+        response = self.client.get(reverse("product_detail", args=["PROD-1"]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["product_name"], "Producto de prueba")
+        self.assertEqual(response.context["order_count"], 1)
+        self.assertEqual(response.context["order_units"], 20)
+        self.assertEqual(response.context["order_value"], Decimal("80.00"))
+        self.assertEqual(response.context["transfer_count"], 1)
+        self.assertEqual(response.context["transfer_quantity"], 7)
+        self.assertEqual(len(response.context["weekly_forecast"]), 4)
+
+    def test_product_detail_returns_not_found_for_unknown_code(self):
+        response = self.client.get(reverse("product_detail", args=["UNKNOWN"]))
+        self.assertEqual(response.status_code, 404)
