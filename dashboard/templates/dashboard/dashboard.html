@@ -11,7 +11,7 @@ Dashboard
 
 {% block content %}
 
-<!-- KPIs -->
+
 <div class="row">
 
     <!-- Pronósticos -->
@@ -20,12 +20,19 @@ Dashboard
         <div class="small-box text-bg-primary">
 
             <div class="inner">
-                <h3>0</h3>
-                <p>Productos pronosticados</p>
+
+                <h3>
+                    {{ total_forecasts }}
+                </h3>
+
+                <p>
+                    Productos pronosticados
+                </p>
+
             </div>
 
             <i
-                class="small-box-icon bi bi-graph-up-arrow"
+                class="bi bi-graph-up-arrow small-box-icon"
                 style="font-size: 70px;"
             ></i>
 
@@ -40,12 +47,19 @@ Dashboard
         <div class="small-box text-bg-success">
 
             <div class="inner">
-                <h3>0</h3>
-                <p>Órdenes de compra</p>
+
+                <h3>
+                    {{ total_orders }}
+                </h3>
+
+                <p>
+                    Órdenes de compra
+                </p>
+
             </div>
 
             <i
-                class="small-box-icon bi bi-cart-check"
+                class="bi bi-cart-check small-box-icon"
                 style="font-size: 70px;"
             ></i>
 
@@ -60,12 +74,19 @@ Dashboard
         <div class="small-box text-bg-warning">
 
             <div class="inner">
-                <h3>0</h3>
-                <p>Transferencias</p>
+
+                <h3>
+                    {{ total_transfers }}
+                </h3>
+
+                <p>
+                    Transferencias
+                </p>
+
             </div>
 
             <i
-                class="small-box-icon bi bi-arrow-left-right"
+                class="bi bi-arrow-left-right small-box-icon"
                 style="font-size: 70px;"
             ></i>
 
@@ -74,18 +95,25 @@ Dashboard
     </div>
 
 
-    <!-- Sucursales -->
+    <!-- Almacenes -->
     <div class="col-lg-3 col-6">
 
         <div class="small-box text-bg-danger">
 
             <div class="inner">
-                <h3>4</h3>
-                <p>Sucursales</p>
+
+                <h3>
+                    {{ total_warehouses }}
+                </h3>
+
+                <p>
+                    Almacenes
+                </p>
+
             </div>
 
             <i
-                class="small-box-icon bi bi-building"
+                class="bi bi-building small-box-icon"
                 style="font-size: 70px;"
             ></i>
 
@@ -96,38 +124,44 @@ Dashboard
 </div>
 
 
-<!-- Gráficos -->
+<!-- ===================================================== -->
+<!-- KPIs SECUNDARIOS -->
+<!-- ===================================================== -->
+
 <div class="row">
 
-    <div class="col-lg-7">
+    <div class="col-md-6">
 
         <div class="card">
 
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="bi bi-graph-up me-2"></i>
-                    Predicción de demanda
-                </h3>
-            </div>
-
             <div class="card-body">
 
-                <div
-                    class="d-flex justify-content-center align-items-center text-secondary"
-                    style="height: 300px;"
-                >
-                    <div class="text-center">
+                <div class="d-flex align-items-center">
+
+                    <div class="me-3">
 
                         <i
-                            class="bi bi-bar-chart"
-                            style="font-size: 50px;"
+                            class="bi bi-cash-stack text-success"
+                            style="font-size: 42px;"
                         ></i>
 
-                        <p class="mt-3">
-                            Aquí mostraremos el pronóstico semanal
-                        </p>
+                    </div>
+
+                    <div>
+
+                        <span class="text-muted">
+                            Valor total de órdenes
+                        </span>
+
+                        <h3 class="mb-0">
+
+                            $
+                            {{ total_order_value|floatformat:2 }}
+
+                        </h3>
 
                     </div>
+
                 </div>
 
             </div>
@@ -137,35 +171,37 @@ Dashboard
     </div>
 
 
-    <div class="col-lg-5">
+    <div class="col-md-6">
 
         <div class="card">
 
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="bi bi-pie-chart me-2"></i>
-                    Productos por categoría
-                </h3>
-            </div>
-
             <div class="card-body">
 
-                <div
-                    class="d-flex justify-content-center align-items-center text-secondary"
-                    style="height: 300px;"
-                >
-                    <div class="text-center">
+                <div class="d-flex align-items-center">
+
+                    <div class="me-3">
 
                         <i
-                            class="bi bi-pie-chart"
-                            style="font-size: 50px;"
+                            class="bi bi-box-seam text-primary"
+                            style="font-size: 42px;"
                         ></i>
 
-                        <p class="mt-3">
-                            Categorías A / B
-                        </p>
+                    </div>
+
+                    <div>
+
+                        <span class="text-muted">
+                            Demanda total pronosticada
+                        </span>
+
+                        <h3 class="mb-0">
+
+                            {{ total_forecast_demand|floatformat:0 }}
+
+                        </h3>
 
                     </div>
+
                 </div>
 
             </div>
@@ -177,7 +213,82 @@ Dashboard
 </div>
 
 
-<!-- Tabla -->
+<!-- ===================================================== -->
+<!-- GRÁFICOS -->
+<!-- ===================================================== -->
+
+<div class="row">
+
+    <!-- Demanda semanal -->
+    <div class="col-lg-8">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    <i class="bi bi-graph-up me-2"></i>
+
+                    Demanda pronosticada semanal
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <div style="height: 350px;">
+
+                    <canvas id="forecastChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Categorías -->
+    <div class="col-lg-4">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    <i class="bi bi-pie-chart me-2"></i>
+
+                    Productos por categoría
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <div style="height: 350px;">
+
+                    <canvas id="categoryChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- TOP ÓRDENES -->
+<!-- ===================================================== -->
+
 <div class="row">
 
     <div class="col-12">
@@ -186,43 +297,68 @@ Dashboard
 
             <div class="card-header">
 
-                <div
-                    class="d-flex justify-content-between align-items-center"
-                >
+                <h3 class="card-title">
 
-                    <h3 class="card-title">
-                        <i class="bi bi-table me-2"></i>
-                        Resumen de órdenes de compra
-                    </h3>
+                    <i class="bi bi-cart4 me-2"></i>
 
-                    <button
-                        type="button"
-                        class="btn btn-primary btn-sm"
-                    >
-                        Ver todas
-                    </button>
+                    Principales órdenes de compra
 
-                </div>
+                </h3>
 
             </div>
-
 
             <div class="card-body p-0">
 
                 <div class="table-responsive">
 
-                    <table class="table table-hover mb-0">
+                    <table
+                        class="table table-hover table-striped mb-0"
+                    >
 
                         <thead>
 
                             <tr>
-                                <th>Código</th>
-                                <th>Producto</th>
-                                <th>Sucursal</th>
-                                <th>Categoría</th>
-                                <th>Stock</th>
-                                <th>Demanda</th>
-                                <th>Cantidad a ordenar</th>
+
+                                <th>
+                                    Código
+                                </th>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Almacén
+                                </th>
+
+                                <th>
+                                    Categoría
+                                </th>
+
+                                <th class="text-end">
+                                    Stock
+                                </th>
+
+                                <th class="text-end">
+                                    Demanda
+                                </th>
+
+                                <th class="text-end">
+                                    Reorden
+                                </th>
+
+                                <th class="text-end">
+                                    Ordenar
+                                </th>
+
+                                <th class="text-end">
+                                    Costo unitario
+                                </th>
+
+                                <th class="text-end">
+                                    Valor orden
+                                </th>
+
                             </tr>
 
                         </thead>
@@ -230,28 +366,104 @@ Dashboard
 
                         <tbody>
 
-                            <tr>
+                            {% for order in top_orders %}
 
-                                <td colspan="7">
+                                <tr>
 
-                                    <div
-                                        class="text-center py-4 text-secondary"
+                                    <td>
+                                        {{ order.codigo_item }}
+                                    </td>
+
+                                    <td>
+                                        {{ order.item_name }}
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge text-bg-secondary">
+
+                                            {{ order.almacen }}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if order.categoria == 'A' %}
+
+                                            <span class="badge text-bg-success">
+                                                A
+                                            </span>
+
+                                        {% elif order.categoria == 'B' %}
+
+                                            <span class="badge text-bg-warning">
+                                                B
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge text-bg-secondary">
+
+                                                {{ order.categoria }}
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{ order.disponible|floatformat:0 }}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{ order.forecasted_demand|floatformat:0 }}
+
+                                    </td>
+
+                                    <td class="text-end">
+                                        {{ order.punto_reorden|floatformat:0 }}
+                                    </td>
+
+                                    <td class="text-end">
+                                        <strong>
+                                            {{ order.cantidad_a_ordenar|floatformat:0 }}
+                                        </strong>
+                                    </td>
+
+                                    <td class="text-end">
+                                        $ {{ order.costo|floatformat:2 }}
+                                    </td>
+
+                                    <td class="text-end">
+                                        <strong>
+                                            $ {{ order.valor_orden|floatformat:2 }}
+                                        </strong>
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="9"
+                                        class="text-center py-4"
                                     >
 
-                                        <i
-                                            class="bi bi-database"
-                                            style="font-size: 35px;"
-                                        ></i>
+                                        No existen órdenes de compra.
 
-                                        <p class="mb-0 mt-2">
-                                            Los datos se mostrarán después de cargar los archivos del modelo.
-                                        </p>
+                                    </td>
 
-                                    </div>
+                                </tr>
 
-                                </td>
-
-                            </tr>
+                            {% endfor %}
 
                         </tbody>
 
@@ -266,5 +478,396 @@ Dashboard
     </div>
 
 </div>
+
+
+<!-- ===================================================== -->
+<!-- TRANSFERENCIAS + ALMACENES -->
+<!-- ===================================================== -->
+
+<div class="row">
+
+    <!-- Transferencias -->
+    <div class="col-lg-7">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    <i class="bi bi-arrow-left-right me-2"></i>
+
+                    Últimas transferencias
+
+                </h3>
+
+            </div>
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Origen
+                                </th>
+
+                                <th>
+                                    Destino
+                                </th>
+
+                                <th class="text-end">
+                                    Cantidad
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for transfer in recent_transfers %}
+
+                                <tr>
+
+                                    <td>
+
+                                        {{ transfer.product_code }}
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge text-bg-secondary">
+
+                                            {{ transfer.origen }}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge text-bg-primary">
+
+                                            {{ transfer.destino }}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <strong>
+
+                                            {{ transfer.cantidad|floatformat:0 }}
+
+                                        </strong>
+
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="text-center py-4"
+                                    >
+
+                                        No existen transferencias.
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Almacenes -->
+    <div class="col-lg-5">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    <i class="bi bi-building me-2"></i>
+
+                    Almacenes con mayor valor de órdenes
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                {% for warehouse in warehouses %}
+
+                    <div
+                        class="d-flex justify-content-between align-items-center border-bottom py-3"
+                    >
+
+                        <div>
+
+                            <strong>
+
+                                {{ warehouse.almacen }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ warehouse.total_orders }}
+                                órdenes
+
+                            </small>
+
+                        </div>
+
+                        <div class="text-end">
+
+                            <strong>
+
+                                $
+                                {{ warehouse.total_value|floatformat:2 }}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="text-center text-muted">
+
+                        No existen datos.
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- DATOS PARA JAVASCRIPT -->
+<!-- ===================================================== -->
+
+{{ weekly_labels|json_script:"weekly-labels" }}
+
+{{ weekly_totals|json_script:"weekly-values" }}
+
+{{ category_labels|json_script:"category-labels" }}
+
+{{ category_values|json_script:"category-values" }}
+
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =====================================================
+    // DATOS
+    // =====================================================
+
+    const weeklyLabels = JSON.parse(
+        document.getElementById(
+            "weekly-labels"
+        ).textContent
+    );
+
+    const weeklyValues = JSON.parse(
+        document.getElementById(
+            "weekly-values"
+        ).textContent
+    );
+
+
+    const categoryLabels = JSON.parse(
+        document.getElementById(
+            "category-labels"
+        ).textContent
+    );
+
+    const categoryValues = JSON.parse(
+        document.getElementById(
+            "category-values"
+        ).textContent
+    );
+
+
+    // =====================================================
+    // GRÁFICO DE DEMANDA
+    // =====================================================
+
+    const forecastCanvas =
+        document.getElementById(
+            "forecastChart"
+        );
+
+
+    if (forecastCanvas) {
+
+        new Chart(
+            forecastCanvas,
+            {
+                type: "line",
+
+                data: {
+
+                    labels: weeklyLabels,
+
+                    datasets: [
+
+                        {
+                            label:
+                                "Demanda pronosticada",
+
+                            data:
+                                weeklyValues,
+
+                            borderWidth: 3,
+
+                            tension: 0.3,
+
+                            fill: false
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: true
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // GRÁFICO POR CATEGORÍA
+    // =====================================================
+
+    const categoryCanvas =
+        document.getElementById(
+            "categoryChart"
+        );
+
+
+    if (categoryCanvas) {
+
+        new Chart(
+            categoryCanvas,
+            {
+                type: "doughnut",
+
+                data: {
+
+                    labels:
+                        categoryLabels,
+
+                    datasets: [
+
+                        {
+                            data:
+                                categoryValues,
+
+                            borderWidth: 2
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom"
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+});
+
+</script>
 
 {% endblock %}
